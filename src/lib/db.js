@@ -3,11 +3,11 @@ const mysql = require('mysql2');
 export const getDatabase = () => {
   const db = mysql.createConnection({
     multipleStatements: true,
-    host     : 'localhost',
+    host     : 'sql9.freemysqlhosting.net',
     port     : 3306,
-    user     : 'root',
-    password : 'fill in here', //Not secure to store it this way; fill in yourself
-    database : 'guestbook'
+    user     : 'sql9654532',
+    password : '', //Not secure to store it this way; fill in yourself
+    database : 'sql9654532'
   });
 
   return db;

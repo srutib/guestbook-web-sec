@@ -1,0 +1,91 @@
+<!--Native HTML/JS approach to the guestbook to demonstrate certain vulnerabilities-->
+
+<html>
+<head>
+    <script>
+        window.onload = function () {
+            const getMessagesURL = "/api/get_all_messages";
+            fetch(getMessagesURL)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    const ul = document.getElementById('messages');
+                    const list = document.createDocumentFragment();
+
+                    let allMessages = data;
+                    allMessages.map(function (msg) {
+                        let li = document.createElement('li');
+                        list.appendChild(li);
+                        
+                        let table = document.createElement('table');
+                        li.appendChild(table);
+
+                        let tbody = document.createElement('tbody');
+                        table.appendChild(tbody);
+
+                        let trName = document.createElement('tr');
+                        let trMessage = document.createElement('tr');
+                        tbody.appendChild(trName);
+                        tbody.appendChild(trMessage);
+
+                        let tdName = document.createElement('td');
+                        let tdMessage = document.createElement('td');
+                        trName.appendChild(tdName);
+                        trMessage.appendChild(tdMessage);
+
+                        tdName.innerHTML = `From: ${msg.name}`;
+                        tdMessage.innerHTML = `Message: ${msg.message}`;
+
+                        ul.appendChild(list);
+                    });
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        };
+    </script>
+</head>
+
+<body>
+    <div>
+        <form action="filter.html" method="GET">
+          <input name="name" type="text" placeholder='Enter the name of a person whose messages you want to see...' />
+          <input type="submit" value="Filter" />
+        </form>
+    </div>
+    <div>
+        <form method="GET" action="/api/create_message">
+            <table>
+                <tbody>
+                    <tr>
+                        <td width="4cm">Your name:</td>
+                        <td><input type="text" name="name" id="name" placeholder="Your  name..." /></td>
+                    </tr>
+                    <tr>
+                        <td width="4cm">Your message:</td>
+                        <td><textarea name="message" id="message" rows="5" cols="60" ref=placeholder="Your message..."></textarea></td>
+                    </tr>
+                    <tr>
+                        <td width="4cm">Show?</td>
+                        <td><input type="checkbox" id="display" name="display"/></td>
+                      </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="submit" value="Post" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    
+    <div>
+        <span>Here are messages guests have left so far</span>
+
+        <ul id="messages">
+        </ul>
+    </div>
+    
+</body>
+
+</html>
