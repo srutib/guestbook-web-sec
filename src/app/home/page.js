@@ -14,6 +14,7 @@ export default function Home() {
   const nameRef = useRef(null);
   const messageRef = useRef(null);
   const filterRef = useRef(null);
+  const addressRef = useRef(null);
 
   const getMessages = async () => {
     const messagesFromApi = await fetch("/api/get_all_messages")
@@ -24,8 +25,8 @@ export default function Home() {
 
   const postMessage = async(event) => {
     event.preventDefault();
-    const queryParams = `name=${event.target[0].value}&message=${event.target[1].value}&display=${event.target[2].checked ^ 0}`;
-    
+    const queryParams = `name=${event.target[0].value}&message=${event.target[2].value}&display=${event.target[3].checked ^ 0}&address=${event.target[1].value}`;
+    console.log(queryParams);
     fetch(`/api/create_message?${queryParams}`)
       .then((res) => res.json())
       .then(() => {
@@ -44,6 +45,7 @@ export default function Home() {
     nameRef.current.value = "";
     messageRef.current.value = "";
     filterRef.current.value = "";
+    addressRef.current.value = "";
   }
 
   useEffect(() => {
@@ -67,6 +69,10 @@ export default function Home() {
                 <td><input type="text" id="name" ref={nameRef} placeholder="Your  name..." /></td>
               </tr>
               <tr>
+                <td width="4cm">Your address:</td>
+                <td><input type="text" id="address" ref={addressRef} placeholder="Your  address..." /></td>
+              </tr>
+              <tr>
               <td width="4cm">Your message:</td>
                 <td><textarea id="message" rows="5" cols="60" ref={messageRef} placeholder="Your message..." /></td>
               </tr>
@@ -88,11 +94,14 @@ export default function Home() {
 
         <ul className={styles["messages"]}>
           {console.log(messages)}
-          {messages?.map(({ name, message}) => {
+          {messages?.map(({ name, address, message}) => {
             return <li className={styles["li"]}>
               <table><tbody>
                 <tr>
                   <td>From: {name}</td>
+                </tr>
+                <tr>
+                  <td>Address: {address}</td>
                 </tr>
                 <tr>
                   <td>Message: {message}</td>

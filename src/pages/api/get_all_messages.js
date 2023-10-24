@@ -2,7 +2,7 @@ import { getDatabase, closeDBInstance } from "@/lib/db";
 
 const getAllMessages = async (db, queryParams) => {
     return new Promise((resolve, reject) => {
-        const query = 'SELECT name, message FROM messages WHERE display = 1;';
+        const query = 'SELECT name, address, message FROM messages WHERE display = 1;';
         console.log(query);
         db.query(query, (err, rows, fields) => {
             if (err) {

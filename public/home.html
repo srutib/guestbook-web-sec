@@ -25,16 +25,21 @@
                         table.appendChild(tbody);
 
                         let trName = document.createElement('tr');
+                        let trAddress = document.createElement('tr');
                         let trMessage = document.createElement('tr');
                         tbody.appendChild(trName);
+                        tbody.appendChild(trAddress);
                         tbody.appendChild(trMessage);
 
                         let tdName = document.createElement('td');
+                        let tdAddress = document.createElement('td');
                         let tdMessage = document.createElement('td');
                         trName.appendChild(tdName);
+                        trAddress.appendChild(tdAddress);
                         trMessage.appendChild(tdMessage);
 
                         tdName.innerHTML = `From: ${msg.name}`;
+                        tdAddress.innerHTML = `Address: ${msg.address}`;
                         tdMessage.innerHTML = `Message: ${msg.message}`;
 
                         ul.appendChild(list);
@@ -44,6 +49,23 @@
                     console.error(error);
                 });
         };
+    </script>
+    <script>
+        const postMessage = () => {
+            const display_button = document.getElementById('display').checked; 
+            const display = display_button? 1 : 0;
+
+            const name = document.getElementById("name").value;
+            const message = document.getElementById("message").value;
+            const address = document.getElementById("address").value;
+
+            const queryParams = `name=${name}&message=${message}&display=${display}&address=${address}`;
+            fetch(`/api/create_message?${queryParams}`)
+                .then((res) => res.json())
+                .then(() => {
+                    window.location.reload();
+                });
+        }
     </script>
 </head>
 
@@ -55,7 +77,7 @@
         </form>
     </div>
     <div>
-        <form method="GET" action="/api/create_message">
+        <form id="new_post" method="GET" onsubmit="postMessage()">
             <table>
                 <tbody>
                     <tr>
@@ -63,12 +85,16 @@
                         <td><input type="text" name="name" id="name" placeholder="Your  name..." /></td>
                     </tr>
                     <tr>
+                        <td width="4cm">Your address:</td>
+                        <td><input type="text" name="address" id="address" placeholder="Your  address..." /></td>
+                    </tr>
+                    <tr>
                         <td width="4cm">Your message:</td>
                         <td><textarea name="message" id="message" rows="5" cols="60" ref=placeholder="Your message..."></textarea></td>
                     </tr>
                     <tr>
                         <td width="4cm">Show?</td>
-                        <td><input type="checkbox" id="display" name="display"/></td>
+                        <td><input type="checkbox" id="display" name="display" /></td>
                       </tr>
                     <tr>
                         <td></td>
