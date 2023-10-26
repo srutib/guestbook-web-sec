@@ -3,6 +3,22 @@
 <html>
 <head>
     <script>
+        const postMessage = (e) => {
+            e.preventDefault();
+            const display_button = document.getElementById('display').checked;
+            const display = display_button ? 1 : 0;
+
+            const name = document.getElementById("name").value;
+            const message = document.getElementById("message").value;
+            const address = document.getElementById("address").value;
+
+            const queryParams = `name=${name}&message=${message}&display=${display}&address=${address}`;
+            fetch(`/api/create_message?${queryParams}`)
+                .then((res) => res.json())
+                .then(() => {
+                    window.location.reload();
+                });
+        }
         window.onload = function () {
             const getMessagesURL = "/api/get_all_messages";
             fetch(getMessagesURL)
@@ -48,24 +64,10 @@
                 .catch(function (error) {
                     console.error(error);
                 });
+
+            const form = document.getElementById("new_post");
+            form.addEventListener("submit", postMessage);
         };
-    </script>
-    <script>
-        const postMessage = () => {
-            const display_button = document.getElementById('display').checked; 
-            const display = display_button? 1 : 0;
-
-            const name = document.getElementById("name").value;
-            const message = document.getElementById("message").value;
-            const address = document.getElementById("address").value;
-
-            const queryParams = `name=${name}&message=${message}&display=${display}&address=${address}`;
-            fetch(`/api/create_message?${queryParams}`)
-                .then((res) => res.json())
-                .then(() => {
-                    window.location.reload();
-                });
-        }
     </script>
 </head>
 
@@ -77,7 +79,7 @@
         </form>
     </div>
     <div>
-        <form id="new_post" method="GET" onsubmit="postMessage()">
+        <form id="new_post" method="GET">
             <table>
                 <tbody>
                     <tr>
