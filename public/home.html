@@ -1,9 +1,11 @@
 <!--Native HTML/JS approach to the guestbook to demonstrate certain vulnerabilities-->
 
 <html>
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; script-src 'nonce-HomeScript123'" />
 <head>
     <title>Our wedding guestbook!</title>
-    <script>
+    <script nonce="HomeScript123">
         const postMessage = (e) => {
             e.preventDefault();
             const display_button = document.getElementById('display').checked;
@@ -55,9 +57,9 @@
                         trAddress.appendChild(tdAddress);
                         trMessage.appendChild(tdMessage);
 
-                        tdName.innerHTML = `From: ${msg.name}`;
-                        tdAddress.innerHTML = `Address: ${msg.address}`;
-                        tdMessage.innerHTML = `Message: ${msg.message}`;
+                        tdName.innerText = `From: ${msg.name}`;
+                        tdAddress.innerText = `Address: ${msg.address}`;
+                        tdMessage.innerText = `Message: ${msg.message}`;
 
                         ul.appendChild(list);
                     });

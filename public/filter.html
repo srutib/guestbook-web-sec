@@ -2,11 +2,13 @@
 
 <html>
 <head>
-    <script>
+    <meta http-equiv="Content-Security-Policy" 
+        content="default-src 'self'; script-src 'nonce-SearchScript123'" />
+    <script 'SearchScript123'>
         window.onload = function () {
             let params = new URL(document.location).searchParams;
             let name = params.get("name");   
-            document.getElementById("filter-heading").innerHTML += name;
+            document.getElementById("filter-heading").innerText += name;
 
             const getMessagesURL = `/api/filter_messages?name=${name}`;
             fetch(getMessagesURL)
@@ -34,7 +36,7 @@
                         let tdMessage = document.createElement('td');
                         trMessage.appendChild(tdMessage);
 
-                        tdMessage.innerHTML = `Message: ${msg}`;
+                        tdMessage.innerText = `Message: ${msg}`;
 
                         ul.appendChild(list);
                     });

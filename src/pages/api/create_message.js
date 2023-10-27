@@ -2,9 +2,12 @@ import { getDatabase, closeDBInstance } from "@/lib/db";
 
 const createMessage = async (db, queryParams) => {
     return new Promise((resolve, reject) => {
-        const query = `INSERT INTO messages (name, display, message, address) VALUES(\'${queryParams.name}\', ${queryParams.display}, \'${queryParams.message}\', \'${queryParams.address}\')`;
+        //const query = `INSERT INTO messages (name, display, message, address) VALUES(\'${queryParams.name}\', ${queryParams.display}, \'${queryParams.message}\', \'${queryParams.address}\')`;
+        const query = `INSERT INTO messages (name, display, message, address) VALUES(?, ?, ?, ?)`;
         console.log(query);
-        db.query(query, (err, rows, fields) => {
+        db.execute(query, 
+            [`${queryParams.name}`, queryParams.display, `${queryParams.message}`, `${queryParams.address}`],
+            (err, rows, fields) => {
             if (err) {
                 console.log(err);
                 console.error("Error inserting message");

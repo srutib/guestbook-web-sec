@@ -11,7 +11,7 @@ const filter = async (db, queryParams) => {
         console.log(query);
         db.query(query, (err, rows, fields) => {
             console.log(fields);
-            if (fields[0].constructor == Array) {
+            if (fields.length > 1 && fields[0].constructor == Array) {
                 rows = rows[0]; // I have no idea why it returned an array of arrays but need to extract it out
             }
             console.log(rows);
