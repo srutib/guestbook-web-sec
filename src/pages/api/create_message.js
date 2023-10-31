@@ -6,8 +6,8 @@ const createMessage = async (db, queryParams) => {
         const query = `INSERT INTO messages (name, display, message, address) VALUES(?, ?, ?, ?)`;
         console.log(query);
         db.execute(query, 
-            [`${queryParams.name}`, queryParams.display, `${queryParams.message}`, `${queryParams.address}`],
-            (err, rows, fields) => {
+        [`${queryParams.name}`, queryParams.display, `${queryParams.message}`, `${queryParams.address}`],
+        (err, rows, fields) => {
             if (err) {
                 console.log(err);
                 console.error("Error inserting message");
