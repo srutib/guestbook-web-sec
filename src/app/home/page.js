@@ -5,7 +5,7 @@
 import styles from './page.module.css'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { AiOutlineHome } from 'react-icons/ai';
+import { FiLogOut } from 'react-icons/fi';
 
 export default function Home() {
   const [messages, setMessages] = useState([]);
@@ -17,7 +17,15 @@ export default function Home() {
   const addressRef = useRef(null);
 
   const getMessages = async () => {
-    const messagesFromApi = await fetch("/api/get_all_messages")
+    const requestOptions = {
+      method: 'GET',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': window.localStorage.getItem("guestbook-jwt") 
+      }
+    };
+
+    const messagesFromApi = await fetch("/api/get_all_messages", requestOptions)
       .then((res) => res.json());
 
     setMessages(messagesFromApi);
@@ -26,8 +34,16 @@ export default function Home() {
   const postMessage = async(event) => {
     event.preventDefault();
     const queryParams = `name=${event.target[0].value}&message=${event.target[2].value}&display=${event.target[3].checked ^ 0}&address=${event.target[1].value}`;
-    console.log(queryParams);
-    fetch(`/api/create_message?${queryParams}`)
+    
+    const requestOptions = {
+      method: 'GET',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': window.localStorage.getItem("guestbook-jwt") 
+      }
+    };
+
+    fetch(`/api/create_message?${queryParams}`, requestOptions)
       .then((res) => res.json())
       .then(() => {
         getMessages();
@@ -48,12 +64,22 @@ export default function Home() {
     addressRef.current.value = "";
   }
 
+  const logOut = () => {
+    window.localStorage.removeItem("guestbook-jwt");
+    router.replace("/login");
+  }
+
   useEffect(() => {
-    getMessages();
+    if (!window.localStorage.getItem("guestbook-jwt"))
+      router.replace("/login");
+    else 
+      getMessages();
   }, []);
 
   return (
     <main className={styles.main}>
+      <div className={styles["search-header-item"]}><button onClick={logOut}><FiLogOut size={25}/></button></div>
+
       <div className={styles["input-block"]}>
         <form className={styles["input-section"]} onSubmit={redirectToFilter}>
           <input type="text" ref={filterRef} placeholder='Enter the name of a person whose messages you want to see...' />

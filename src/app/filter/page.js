@@ -4,9 +4,10 @@ import styles from './page.module.css'
 import { useSearchParams } from 'next/navigation'
 import { useState, useEffect} from 'react'
 import { AiOutlineHome } from 'react-icons/ai';
+import { FiLogOut } from 'react-icons/fi';
 import { useRouter } from 'next/navigation'
 
-export default function Home() {
+export default function Filter() {
     const searchParams = useSearchParams()
     const [messages, setMessages] = useState([]);
     const router = useRouter();
@@ -15,7 +16,14 @@ export default function Home() {
     const nameToFind = searchParams.get("name") ?? "";
 
     const filterMessages = async () => {
-        const matchingMessages = await fetch(`/api/filter_messages?name=${nameToFind}`)
+        const requestOptions = {
+            method: 'GET',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': window.localStorage.getItem("guestbook-jwt") 
+            }
+        };
+        const matchingMessages = await fetch(`/api/filter_messages?name=${nameToFind}`, requestOptions)
             .then((res) => res.json());
     
         setMessages(matchingMessages);
@@ -24,16 +32,26 @@ export default function Home() {
     // This hook executes on page rendered. When the page loads,
     // the tasks matching the searched term need to be identified
     useEffect(() => {
-        filterMessages();
+        if (!window.localStorage.getItem("guestbook-jwt"))
+            router.replace("/login");
+        else
+            filterMessages();
     }, []);
 
     const redirectToHome = async (event) => {
         event.preventDefault();
         router.push(`/home`);
-      }
+    }
+
+    const logOut = () => {
+        window.localStorage.removeItem("guestbook-jwt");
+        router.replace("/login");
+    }
 
     return (
         <main>
+            <div className={styles["search-header-item"]}><button onClick={logOut}><FiLogOut size={25}/></button></div>
+            
             <div className={styles["search-header"]}>
                 <div className={styles["search-header-item"]}><button onClick={redirectToHome}><AiOutlineHome size={25}/></button></div>
                 <div className={styles["search-header-item"]}>Here are all the messages posted by "{nameToFind}"</div>
@@ -46,7 +64,7 @@ export default function Home() {
                     return <li className={styles["li"]}>
                         <table><tbody>
                             <tr>
-                                <td>Message: {message}</td>
+                                <td>Message: <span dangerouslySetInnerHTML={{__html: message}}></span></td>
                             </tr>
                         </tbody></table>
                     </li>
