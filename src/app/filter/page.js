@@ -16,7 +16,14 @@ export default function Filter() {
 
     const filterMessages = async () => {
         const matchingMessages = await fetch(`/api/filter_messages?name=${nameToFind}`)
-            .then((res) => res.json());
+            .then(async (res) => {
+                const response = await res.json();
+                if (!res.ok) {
+                    alert(response);
+                    return null;
+                }
+                return response;
+            });
     
         setMessages(matchingMessages);
     };
@@ -42,7 +49,7 @@ export default function Filter() {
             <br></br>
             
             {<ul className={styles["messages"]}>
-                {messages?.map(( message ) => {
+                {messages && messages?.map(( message ) => {
                     return <li className={styles["li"]}>
                         <table><tbody>
                             <tr>

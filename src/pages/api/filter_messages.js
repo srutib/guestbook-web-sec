@@ -1,4 +1,5 @@
 import { getDatabase, closeDBInstance } from "@/lib/db";
+import { Name } from "@/lib/entities/Name";
 
 const filter = async (db, queryParams) => {
     const nameQuery = queryParams.name;
@@ -6,11 +7,19 @@ const filter = async (db, queryParams) => {
         return [];
     }
 
+    let nameObject;
+    
+    try {
+        nameObject = new Name(queryParams.name);
+    } catch (e) {
+        throw new Error("Invalid name to filter on.");
+    }
+
     return new Promise((resolve, reject) => {
         const query = "SELECT message FROM messages WHERE name = ?";
         console.log(query);
         db.execute(query, 
-        [nameQuery],
+        [nameObject.get()],
         (err, rows, fields) => {
             if (fields.length > 1 && fields[0].constructor == Array) {
                 rows = rows[0]; // I have no idea why it returned an array of arrays but need to extract it out
