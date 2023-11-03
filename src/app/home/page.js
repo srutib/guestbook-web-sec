@@ -5,7 +5,6 @@
 import styles from './page.module.css'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { AiOutlineHome } from 'react-icons/ai';
 
 export default function Home() {
   const [messages, setMessages] = useState([]);
@@ -25,10 +24,13 @@ export default function Home() {
 
   const postMessage = async(event) => {
     event.preventDefault();
-    const queryParams = `name=${event.target[0].value}&message=${event.target[2].value}&display=${event.target[3].checked ^ 0}&address=${event.target[1].value}`;
-    console.log(queryParams);
+    const queryParams = `name=${event.target[0].value}&message=${event.target[3].value}&display=${event.target[4].checked ^ 0}&city=${event.target[1].value}&state=${event.target[2].value}`;
     fetch(`/api/create_message?${queryParams}`)
-      .then((res) => res.json())
+      .then(async (res) => {
+        const response = await res.json();
+        if (!res.ok) alert(response);
+        return response;
+      })
       .then(() => {
         getMessages();
         clearRefs();
@@ -69,8 +71,62 @@ export default function Home() {
                 <td><input type="text" id="name" ref={nameRef} placeholder="Your  name..." /></td>
               </tr>
               <tr>
-                <td width="4cm">Your address:</td>
-                <td><input type="text" id="address" ref={addressRef} placeholder="Your  address..." /></td>
+                <td width="4cm">City:</td>
+                <td><input type="text" id="city" ref={addressRef} placeholder="Your  city..." /></td>
+                <td>State:
+                  <select id="statecode">
+                    <option value="AL">AL</option>
+                    <option value="AK">AK</option>
+                    <option value="AZ">AZ</option>
+                    <option value="AR">AR</option>
+                    <option value="CA">CA</option>
+                    <option value="CO">CO</option>
+                    <option value="CT">CT</option>
+                    <option value="DE">DE</option>
+                    <option value="FL">FL</option>
+                    <option value="GA">GA</option>
+                    <option value="HI">HI</option>
+                    <option value="ID">ID</option>
+                    <option value="IL">IL</option>
+                    <option value="IN">IN</option>
+                    <option value="IA">IA</option>
+                    <option value="KS">KS</option>
+                    <option value="KY">KY</option>
+                    <option value="LA">LA</option>
+                    <option value="ME">ME</option>
+                    <option value="MD">MD</option>
+                    <option value="MA">MA</option>
+                    <option value="MI">MI</option>
+                    <option value="MN">MN</option>
+                    <option value="MS">MS</option>
+                    <option value="MO">MO</option>
+                    <option value="MT">MT</option>
+                    <option value="NE">NE</option>
+                    <option value="NV">NV</option>
+                    <option value="NH">NH</option>
+                    <option value="NJ">NJ</option>
+                    <option value="NM">NM</option>
+                    <option value="NY">NY</option>
+                    <option value="NC">NC</option>
+                    <option value="ND">ND</option>
+                    <option value="OH">OH</option>
+                    <option value="OK">OK</option>
+                    <option value="OR">OR</option>
+                    <option value="PA">PA</option>
+                    <option value="RI">RI</option>
+                    <option value="SC">SC</option>
+                    <option value="SD">SD</option>
+                    <option value="TN">TN</option>
+                    <option value="TX">TX</option>
+                    <option value="UT">UT</option>
+                    <option value="VT">VT</option>
+                    <option value="VA">VA</option>
+                    <option value="WA">WA</option>
+                    <option value="WV">WV</option>
+                    <option value="WI">WI</option>
+                    <option value="WY">WY</option>
+                  </select>
+                </td>
               </tr>
               <tr>
               <td width="4cm">Your message:</td>
@@ -98,13 +154,13 @@ export default function Home() {
             return <li className={styles["li"]}>
               <table><tbody>
                 <tr>
-                  <td>From: {name}</td>
+                  <td>From: <span dangerouslySetInnerHTML={{__html: name}} ></span></td>
                 </tr>
                 <tr>
-                  <td>Address: {address}</td>
+                  <td>Address: <span dangerouslySetInnerHTML={{__html: address}} ></span></td>
                 </tr>
                 <tr>
-                  <td>Message: {message}</td>
+                  <td>Message: <span dangerouslySetInnerHTML={{__html: message}} ></span></td>
                 </tr>  
               </tbody></table>
             </li>

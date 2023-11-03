@@ -6,7 +6,7 @@ import { useState, useEffect} from 'react'
 import { AiOutlineHome } from 'react-icons/ai';
 import { useRouter } from 'next/navigation'
 
-export default function Home() {
+export default function Filter() {
     const searchParams = useSearchParams()
     const [messages, setMessages] = useState([]);
     const router = useRouter();

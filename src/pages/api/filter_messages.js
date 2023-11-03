@@ -7,17 +7,14 @@ const filter = async (db, queryParams) => {
     }
 
     return new Promise((resolve, reject) => {
-        //const query = `SELECT message FROM messages WHERE name = \'${nameQuery}\'`;
         const query = "SELECT message FROM messages WHERE name = ?";
         console.log(query);
         db.execute(query, 
         [nameQuery],
         (err, rows, fields) => {
-            console.log(fields);
             if (fields.length > 1 && fields[0].constructor == Array) {
                 rows = rows[0]; // I have no idea why it returned an array of arrays but need to extract it out
             }
-            console.log(rows);
             if (err) {
                 console.error("Error getting messages");
                 return reject(err);
