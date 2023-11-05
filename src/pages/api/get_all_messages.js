@@ -9,7 +9,7 @@ const getAllMessages = async (db, userId) => {
             [userId],
             (err, rows, fields) => {
             if (err) {
-                console.error("Error getting messages");
+                console.error(err);
                 return reject(err);
             }
             return resolve(rows);

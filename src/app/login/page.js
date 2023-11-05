@@ -35,24 +35,16 @@ export default function Login() {
     };
     fetch("/api/login", requestOptions)
       .then((res) => {
-        if (!res.status != 200) {
-          console.log("IM HERE");
-          setFailedLoggedIn(true);
-          return res.json();
-        }
+        if (!res.ok) setFailedLoggedIn(true);
         else {
-          setFailedLoggedIn(false);
-          return res.json();
-        }
-      })
-      .then((res) => {
-        if (failedLoggedIn == false) {
+          setFailedLoggedIn(() => {
             clearRefs();
-            console.log(res);
             window.localStorage.setItem("guestbook-jwt", res);
             router.replace("/home");
+            return false;
+          });
         }
-      })
+      });
   }
 
   useEffect(() => {

@@ -41,16 +41,13 @@ export default function Signup() {
       .then((res) => {
         if (!res.ok) setFailedCreation(true);
         else {
-            setFailedCreation(false);
-            return res.json();
+            setFailedCreation(() => {
+              clearRefs();
+              router.replace("/login");
+              return false;
+            });
         }
-      })
-      .then(() => {
-        if (!setFailedCreation) {
-            clearRefs();
-            router.replace("/login");
-        }
-      })
+      });
   }
 
   useEffect(() => {

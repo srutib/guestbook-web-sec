@@ -11,10 +11,8 @@ const userExists = async (db, bodyParams) => {
             [username, password],
             (err, rows, fields) => {
                 if (rows.length == 0) {
-                    console.log("Didn't match");
                     return reject("User or password does not exist");
                 } else {
-                    console.log("matched");
                     return resolve(rows[0]);
                 }
             });
@@ -25,9 +23,7 @@ export default async function handler(req, res) {
     const db = getDatabase();
     try {
         const user = await userExists(db, req.body);
-        console.log("this is the user", user);
         const jwt = generateJWT(user, '10d');
-        console.log("GENERATING", jwt);
         res.status(200).json(jwt);
     } catch (error) {
         res.status(401).json(error.message);
