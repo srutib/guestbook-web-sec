@@ -6,7 +6,7 @@ import styles from './page.module.css'
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
-export default function Login() {
+export default function LoginPass() {
   const [failedLoggedIn, setFailedLoggedIn] = useState(false);
   const router = useRouter();
 
@@ -26,7 +26,8 @@ export default function Login() {
 
     const body = {
         username: username,
-        password: password
+        password: password,
+        method: "userpass"
     };   
     const requestOptions = {
         method: 'POST',
@@ -34,12 +35,13 @@ export default function Login() {
         body: JSON.stringify(body)
     };
     fetch("/api/login", requestOptions)
-      .then((res) => {
+      .then(async (res) => {
+        const response = await res.json();
         if (!res.ok) setFailedLoggedIn(true);
         else {
           setFailedLoggedIn(() => {
             clearRefs();
-            window.localStorage.setItem("guestbook-jwt", res);
+            window.localStorage.setItem("guestbook-jwt", response);
             router.replace("/home");
             return false;
           });
@@ -57,7 +59,7 @@ export default function Login() {
       <div>
         <form>
           Don't have an account?
-          <button type="submit" formaction="/signup">Sign up</button>
+          <button type="submit" formAction="/signup">Sign up</button>
         </form>
       </div>
       <div className={styles["input-block"]}>
@@ -68,6 +70,10 @@ export default function Login() {
                 <div><font color="red">Invalid username or password.</font></div>
           }
           <input type="submit" value="Login" className={styles["input-block-submit"]} />
+        </form>
+        <form>
+          Login with OTP instead
+          <button type="submit" formAction="/login/otp-email">Login</button>
         </form>
       </div>
     </main>

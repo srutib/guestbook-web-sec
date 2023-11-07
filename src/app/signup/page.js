@@ -7,7 +7,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function Signup() {
-  const [failedCreation, setFailedCreation] = useState(false);
+  const [failedCreationMessage, setFailedMessage] = useState(null);
   const router = useRouter();
 
   const emailRef = useRef(null);
@@ -38,13 +38,16 @@ export default function Signup() {
         body: JSON.stringify(body)
     };
     fetch("/api/create_account", requestOptions)
-      .then((res) => {
-        if (!res.ok) setFailedCreation(true);
-        else {
-            setFailedCreation(() => {
+      .then(async (res) => {
+        const response = await res.json();
+        if (!res.ok) {
+          if (response.type == "invalid") setFailedMessage("Invalid username or password.");
+          else setFailedMessage("Username already exists.");
+        } else {
+            setFailedMessage(() => {
               clearRefs();
               router.replace("/login");
-              return false;
+              return null;
             });
         }
       });
@@ -60,7 +63,7 @@ export default function Signup() {
       <div>
         <form>
           Already have an account?
-          <button type="submit" formaction="/login">Login</button>
+          <button type="submit" formAction="/login">Login</button>
         </form>
       </div>
       <div className={styles["input-block"]}>
@@ -76,12 +79,12 @@ export default function Signup() {
                         <td><input type="text" ref={usernameRef} placeholder='Username' required/></td>
                     </tr>
                     <tr>
-                        <td>Create a password according to the requirements below: </td>
+                        <td>Create a password according to the requirements (at least 1 uppercase letter, lower case letter, digit, and special character): </td>
                         <td>          <input type="password" ref={passwordRef} placeholder='Password' required/></td>
                     </tr>
-                    {failedCreation &&
+                    {failedCreationMessage &&
                         <tr>
-                            <div><font color="red">Username already exists.</font></div>
+                            <div><font color="red">{failedCreationMessage}</font></div>
                         </tr>
                     }
                     <tr>

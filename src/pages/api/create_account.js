@@ -1,3 +1,4 @@
+import { User } from "@/lib/authEntities/user";
 import { getDatabase } from "@/lib/db";
 
 const doesUserExist = async (db, username) => {
@@ -27,17 +28,25 @@ const createAccount = async (db, bodyParams) => {
         const password = bodyParams.password;
         const email = bodyParams.email;
 
+        // Input validation before account creation
+        let user;
+        try {
+            user = new User(username, password);
+        } catch (error) {
+            return reject({type: "invalid", message: error.message});
+        }
+
         // First check that user does not exist
         const userExists = await doesUserExist(db, username);
-        if (userExists) return reject("Username exists");
+        if (userExists) return reject({type: "exists", message: "Username exists"});
 
         const query = `INSERT INTO users (username, password, email) VALUES(?, ?, ?)`;
         db.execute(query,
-            [username, password, email],
+            [user.getUsername(), user.getPassword(), email],
             (err, rows, fields) => {
                 if (err) {
                     console.log(err);
-                    return reject(err.message);
+                    return reject({type: "db", message: err.message});
                 } else {
                     return resolve("User created successfully");
                 }

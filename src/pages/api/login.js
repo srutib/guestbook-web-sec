@@ -1,31 +1,31 @@
-import { getDatabase } from "@/lib/db";
+import { sendOTP, verifyOTP } from "@/lib/authProviders/otp-email";
+import { userExists } from "@/lib/authProviders/passwords";
+import { closeDBInstance, getDatabase } from "@/lib/db";
 import { generateJWT } from "@/lib/jwt";
-
-const userExists = async (db, bodyParams) => {
-    return new Promise((resolve, reject) => {
-        const username = bodyParams.username;
-        const password = bodyParams.password;
-
-        const query = `SELECT * FROM users WHERE username = ? AND password = ?`;
-        db.execute(query,
-            [username, password],
-            (err, rows, fields) => {
-                if (rows.length == 0) {
-                    return reject("User or password does not exist");
-                } else {
-                    return resolve(rows[0]);
-                }
-            });
-    });
-}
 
 export default async function handler(req, res) {
     const db = getDatabase();
+    const authType = req.body.method;
+    let user;
+
     try {
-        const user = await userExists(db, req.body);
+        if (authType == "userpass")
+            user = await userExists(db, req.body);
+        else if (authType == "OTP") {
+            if (req.body.email) {
+                await sendOTP(db, req.body.email);
+            }
+            else if (req.body.enteredCode) {
+                user = await verifyOTP(db, req.body.enteredCode);
+            }   
+        }
+
         const jwt = generateJWT(user, '10d');
+
+        closeDBInstance(db);
         res.status(200).json(jwt);
     } catch (error) {
+        closeDBInstance(db);
         res.status(401).json(error.message);
     }
 }

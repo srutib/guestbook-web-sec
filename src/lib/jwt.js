@@ -7,12 +7,10 @@ export const generateJWT = (user, duration) => {
     }, TOP_SECRET_SIGNING_SECRET, {
         expiresIn: duration
     });
-    console.log("This is the token", token);
     return token;
 }
 
 export const verifyJWT = (token) => {
-    console.log("TOKEN", token);
     try {
         const tokenPayload = jwt.verify(token, TOP_SECRET_SIGNING_SECRET);
         return tokenPayload.userId;
