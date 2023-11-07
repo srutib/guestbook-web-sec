@@ -1,5 +1,3 @@
-import { User } from "../authEntities/user";
-
 export const userExists = async (db, bodyParams) => {
     return new Promise((resolve, reject) => {
         const username = bodyParams.username;

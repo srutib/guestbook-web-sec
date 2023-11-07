@@ -10,7 +10,6 @@ export default function MagicLink() {
   const [afterSendingOTP, setAfterSendingOTP] = useState(false);
   const [email, setEmail] = useState(null);
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const emailRef = useRef(null);
   const codeRef = useRef(null);
