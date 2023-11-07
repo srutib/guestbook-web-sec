@@ -41,6 +41,7 @@ export default function Signup() {
       .then(async (res) => {
         const response = await res.json();
         if (!res.ok) {
+          console.log(response);
           if (response.type == "invalid") setFailedMessage("Invalid username or password.");
           else setFailedMessage("Username already exists.");
         } else {

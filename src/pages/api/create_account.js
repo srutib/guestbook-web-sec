@@ -33,7 +33,7 @@ const createAccount = async (db, bodyParams) => {
         try {
             user = new User(username, password);
         } catch (error) {
-            return reject({type: "invalid", message: error.message});
+            return reject({type: "invalid", message: error});
         }
 
         // First check that user does not exist
@@ -61,6 +61,6 @@ export default async function handler(req, res) {
         const message = await createAccount(db, req.body);
         res.status(200).json(message);
     } catch (error) {
-        res.status(409).json(error.message);
+        res.status(409).json(error);
     }
 }
