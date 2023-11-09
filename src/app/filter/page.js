@@ -54,7 +54,7 @@ export default function Filter() {
             
             <div className={styles["search-header"]}>
                 <div className={styles["search-header-item"]}><button onClick={redirectToHome}><AiOutlineHome size={25}/></button></div>
-                <div className={styles["search-header-item"]}>Here are all the messages posted by "{nameToFind}"</div>
+                <div className={styles["search-header-item"]}>Here are all the messages posted by "<span dangerouslySetInnerHTML={{__html: nameToFind}}></span>"</div>
             </div>
             
             <br></br>
