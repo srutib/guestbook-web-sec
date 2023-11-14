@@ -12,7 +12,7 @@ export class User {
     }
 
     isValidPassword(password) {
-        if (password.length < 14) throw new Error("Password too short.");
+        if (password.length < 8) throw new Error("Password too short.");
 
         const passwordPattern = /^[A-Za-z0-9$@%#*!?]+$/;
         if (!passwordPattern.test(password)) throw new Error("Password contains illegal characters.");

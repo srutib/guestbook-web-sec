@@ -40,16 +40,13 @@ export default function Signup() {
     fetch("/api/create_account", requestOptions)
       .then(async (res) => {
         const response = await res.json();
-        if (!res.ok) {
-          console.log(response);
-          if (response.type == "invalid") setFailedMessage("Invalid username or password.");
-          else setFailedMessage("Username already exists.");
-        } else {
-            setFailedMessage(() => {
-              clearRefs();
-              router.replace("/login");
-              return null;
-            });
+        if (!res.ok) setFailedMessage(response);
+        else {
+          setFailedMessage(() => {
+            clearRefs();
+            router.replace("/login");
+            return null;
+          });
         }
       });
   }
@@ -80,7 +77,7 @@ export default function Signup() {
                         <td><input type="text" ref={usernameRef} placeholder='Username' required/></td>
                     </tr>
                     <tr>
-                        <td>Create a password according to the requirements (at least 1 uppercase letter, lower case letter, digit, and special character): </td>
+                        <td>Create a password according to the requirements (8 characters or more, at least 1 uppercase letter, lower case letter, digit, and special character ($@%#*!?)): </td>
                         <td>          <input type="password" ref={passwordRef} placeholder='Password' required/></td>
                     </tr>
                     {failedCreationMessage &&

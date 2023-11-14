@@ -33,12 +33,12 @@ const createAccount = async (db, bodyParams) => {
         try {
             user = new User(username, password);
         } catch (error) {
-            return reject({type: "invalid", message: error});
+            return reject(error.message);
         }
 
         // First check that user does not exist
         const userExists = await doesUserExist(db, username);
-        if (userExists) return reject({type: "exists", message: "Username exists"});
+        if (userExists) return reject("Username exists");
 
         const query = `INSERT INTO users (username, password, email) VALUES(?, ?, ?)`;
         db.execute(query,
@@ -46,7 +46,7 @@ const createAccount = async (db, bodyParams) => {
             (err, rows, fields) => {
                 if (err) {
                     console.log(err);
-                    return reject({type: "db", message: err.message});
+                    return reject("Error creating account");
                 } else {
                     return resolve("User created successfully");
                 }

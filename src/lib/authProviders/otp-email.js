@@ -53,9 +53,9 @@ export const getUserFromEmail = (db, email) => {
 };
 
 const sendEmail = (destination, subject, htmlBody) => {
-    const client = new postmark.ServerClient("79f6a31f-52d5-4dad-8488-c6ed42efc1c5");
+    const client = new postmark.ServerClient("5410bdd9-96ff-4049-baea-0f2be31eec40");
     client.sendEmail({
-        "From": "srutib@northwestern.edu",
+        "From": "srutib@u.northwestern.edu",
         "To": destination,
         "Subject": subject,
         "HTMLBody": htmlBody
